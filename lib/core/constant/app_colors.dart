@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 abstract class AppColors {
-
   // 🌍 Base Colors
   static const Color whiteColor = Colors.white;
   static const Color blackColor = Colors.black;
@@ -32,4 +31,19 @@ abstract class AppColors {
 
   // 🎥 Video / Course Accent
   static const Color purpleAccent = Color(0xFF7367F0);
+
+  // 🌈 Custom Colors
+  static const Color color1 = Color(0xFF334155);
+  static const Color color2 = Color(0xFF64748B);
+  static const Color color3 = Color(0xFF94A3B8);
+  static const Color color4 = Color(0xFF64748B);
+  static const Color gradientStart = Color(0xFFE53935);
+  static const Color gradientEnd = Color(0xFFFF7043);
+
+  // 🌟 Gradient Example
+  static LinearGradient customGradient = LinearGradient(
+    colors: [gradientStart, gradientEnd],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
 }

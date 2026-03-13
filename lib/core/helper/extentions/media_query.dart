@@ -5,7 +5,7 @@ extension ResponsiveExt on BuildContext {
   //  Design Base (Figma)
 
 
-  static const double designWidth = 411;
+  static const double designWidth = 390;
   static const double designHeight = 884;
 
   //  Device Info

@@ -1,0 +1,122 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:food_app/core/constant/app_colors.dart';
+import 'package:food_app/core/constant/app_text_style.dart';
+import 'package:food_app/core/helper/extentions/media_query.dart';
+import '../../../../core/constant/assets_manger.dart';
+import '../../../../core/widgets/custom_text_form_feild.dart';
+import '../widgets/category_item.dart';
+import '../../domin/entity/food_entity.dart';
+
+class Home extends StatelessWidget {
+  const Home({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final categories = [
+      RecipeCategory(
+        id: "2",
+        name: "Beef",
+        image: AssetsManger.home4,
+      ),
+      RecipeCategory(
+        id: "3",
+        name: "Beef",
+        image: AssetsManger.home4,
+      ),
+      RecipeCategory(
+        id: "4",
+        name: "Beef",
+        image: AssetsManger.home4,
+      ),
+      RecipeCategory(
+        id: "5",
+        name: "Beef",
+        image: AssetsManger.home4,
+      ),
+      RecipeCategory(
+        id: "6",
+        name: "Beef",
+        image: AssetsManger.home4,
+      ),
+    ];
+
+    return Scaffold(
+      backgroundColor: AppColors.scaffoldBackground,
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: context.w(20)),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+
+              /// HEADER
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Recipe Finder",
+                    style: AppTextStyles.bold20black,
+                  ),
+                  Icon(Icons.search, color: Colors.red)
+                ],
+              ),
+
+              context.verticalSpace(20),
+
+              /// SEARCH
+              CustomTextFormField(
+                hintText: "Search recipes, ingredients...",
+                prefixIcon: const Icon(Icons.search),
+                width: double.infinity,
+                height: context.h(56),
+                keyboardType: TextInputType.text,
+                backgroundColor: AppColors.hintText,
+              ),
+
+              SizedBox(height: context.h(25)),
+
+              /// CATEGORY TITLE
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Categories",
+                    style: AppTextStyles.bold18black,
+                  ),
+                  Text(
+                    "See All",
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+
+              SizedBox(height: context.h(20)),
+
+              /// GRID
+              Expanded(
+                child: GridView.builder(
+                  itemCount: categories.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: context.h(16),
+                    crossAxisSpacing: context.w(16),
+                    childAspectRatio: 0.9,
+                  ),
+                  itemBuilder: (context, index) {
+                    return CategoryItem(
+                      category: categories[index],
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

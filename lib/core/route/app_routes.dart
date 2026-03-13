@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import '../../feature/auth/presentation/view/sign_in.dart';
+import '../../feature/auth/presentation/view/sign_up.dart';
+import '../../feature/home/domin/entity/food_entity.dart';
+import '../../feature/home/presentation/layout.dart';
+import '../../feature/splash/presentation/view/splash_screen.dart';
 import 'routes.dart';
 
 class AppRouter {
@@ -7,37 +12,31 @@ class AppRouter {
 
       case Routes.splash:
         return MaterialPageRoute(
-          builder: (_) => const Scaffold(
-            body: Center(child: Text("Splash Screen")),
-          ),
+          builder: (_) =>  SplashScreen(),
         );
 
       case Routes.signIn:
         return MaterialPageRoute(
-          builder: (_) => const Scaffold(
-            body: Center(child: Text("Sign In Screen")),
-          ),
+          builder: (_) => const SignIn(),
         );
 
       case Routes.signUp:
         return MaterialPageRoute(
-          builder: (_) => const Scaffold(
-            body: Center(child: Text("Sign Up Screen")),
-          ),
+          builder: (_) => const SignUpScreen(),
         );
 
       case Routes.home:
         return MaterialPageRoute(
-          builder: (_) => const Scaffold(
-            body: Center(child: Text("Home Screen")),
-          ),
+          builder: (_) => const Layout()
         );
 
       case Routes.mealsByCategory:
+        final category = settings.arguments as RecipeCategory;
         return MaterialPageRoute(
           builder: (_) => const Scaffold(
             body: Center(child: Text("Meals By Category Screen")),
           ),
+          settings: RouteSettings(arguments: category),
         );
 
       case Routes.mealDetail:
