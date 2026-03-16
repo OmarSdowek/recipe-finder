@@ -1,45 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_app/core/constant/app_colors.dart';
 import 'package:food_app/core/constant/app_text_style.dart';
 import 'package:food_app/core/helper/extentions/media_query.dart';
-import '../../../../core/constant/assets_manger.dart';
 import '../../../../core/widgets/custom_text_form_feild.dart';
+import '../manger/home_cubit/meals_cubit.dart';
 import '../widgets/category_item.dart';
-import '../../domin/entity/food_entity.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final categories = [
-      RecipeCategory(
-        id: "2",
-        name: "Beef",
-        image: AssetsManger.home4,
-      ),
-      RecipeCategory(
-        id: "3",
-        name: "Beef",
-        image: AssetsManger.home4,
-      ),
-      RecipeCategory(
-        id: "4",
-        name: "Beef",
-        image: AssetsManger.home4,
-      ),
-      RecipeCategory(
-        id: "5",
-        name: "Beef",
-        image: AssetsManger.home4,
-      ),
-      RecipeCategory(
-        id: "6",
-        name: "Beef",
-        image: AssetsManger.home4,
-      ),
-    ];
 
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackground,
@@ -58,7 +30,7 @@ class Home extends StatelessWidget {
                     "Recipe Finder",
                     style: AppTextStyles.bold20black,
                   ),
-                  Icon(Icons.search, color: Colors.red)
+                  const Icon(Icons.search, color: Colors.red)
                 ],
               ),
 
@@ -84,7 +56,7 @@ class Home extends StatelessWidget {
                     "Categories",
                     style: AppTextStyles.bold18black,
                   ),
-                  Text(
+                  const Text(
                     "See All",
                     style: TextStyle(
                       color: Colors.red,
@@ -98,18 +70,42 @@ class Home extends StatelessWidget {
 
               /// GRID
               Expanded(
-                child: GridView.builder(
-                  itemCount: categories.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: context.h(16),
-                    crossAxisSpacing: context.w(16),
-                    childAspectRatio: 0.9,
-                  ),
-                  itemBuilder: (context, index) {
-                    return CategoryItem(
-                      category: categories[index],
-                    );
+                child: BlocBuilder<MealsCubit, MealsState>(
+                  builder: (context, state) {
+
+                    if (state is MealsLoading) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+
+                    if (state is MealsSuccess) {
+
+                      final categories = state.meals;
+
+                      return GridView.builder(
+                        itemCount: categories.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: context.h(16),
+                          crossAxisSpacing: context.w(16),
+                          childAspectRatio: 0.9,
+                        ),
+                        itemBuilder: (context, index) {
+                          return CategoryItem(
+                            category: categories[index],
+                          );
+                        },
+                      );
+                    }
+
+                    if (state is MealsError) {
+                      return Center(
+                        child: Text(state.error),
+                      );
+                    }
+
+                    return const SizedBox();
                   },
                 ),
               ),

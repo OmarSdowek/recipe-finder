@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:food_app/core/helper/extentions/media_query.dart';
-
 import '../../../../core/constant/app_colors.dart';
 import '../../../../core/constant/app_text_style.dart';
 import '../../../../core/constant/assets_manger.dart';
 import '../../../../core/route/routes.dart';
 import '../../../../core/utils/vaidation.dart';
-import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/custom_text_form_feild.dart';
+import '../manger/auth_cubit/auth_cubit.dart';
 import '../widgets/build_app_bar.dart';
 import '../widgets/continue_widgets.dart';
 import '../widgets/google-apple_button.dart';
 import '../widgets/login_text_section.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 
 class SignIn extends StatefulWidget {
   const SignIn({super.key});
@@ -51,10 +52,9 @@ class _SignInState extends State<SignIn> {
                 children: [
                   context.verticalSpace(10),
 
-                  // صورة الأكلة
                   Center(
-                    child: SvgPicture.asset(
-                      AssetsManger.home4,
+                    child: Image.asset(
+                      AssetsManger.signUp,
                       width: context.screenWidth,
                       height: context.h(200),
                     ),
@@ -125,31 +125,62 @@ class _SignInState extends State<SignIn> {
                   ),
 
                   context.verticalSpace(10),
+                  BlocConsumer<AuthCubit, AuthState>(
+                    builder: (context, state) {
+                      return state is AuthLoading
+                          ? const Center(child: CircularProgressIndicator())
+                          : SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(vertical: context.h(16)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(context.r(12)),
+                            ),
+                            backgroundColor: AppColors.gradientStart,
+                            elevation: 0,
+                          ),
+                          onPressed: () {
+                            if (formKey.currentState!.validate()) {
+                              context.read<AuthCubit>().signIn(
+                                email.text.trim(),
+                                password.text.trim(),
+                              );
+                            }
+                          },
+                          child: Text(
+                            "Sign In",
+                            style: AppTextStyles.titleMediumWhiteBold,
+                          ),
+                        ),
+                      );
+                    },
+                    listener: (context, state) {
+                      if (state is AuthError) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(state.message),
+                            backgroundColor: AppColors.errorColor,
+                          ),
+                        );
+                        print(state.message);
+                      }
+                      if (state is AuthSuccess) {
+                        Navigator.pushNamed(context, Routes.home);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("LogIn Success"),
+                              backgroundColor: AppColors.successColor,
+                            )
+                        );
+
+                      }
+
+                    },
+                  ),
 
                   // Sign In Button
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: context.h(16)),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(context.r(12)),
-                      ),
-                      backgroundColor: AppColors.gradientStart,
-                      elevation: 0,
-                    ),
-                    onPressed: () {
-                      // if (formKey.currentState!.validate()) {
-                      //   // Logic Register
-                      // }
-                      Navigator.pushNamed(context, Routes.home);
-                    },
-                    child: Text(
-                      "Sign In",
-                      style: AppTextStyles.titleMediumWhiteBold,
-                    ),
-                  ),
-                ),
+
 
                   context.verticalSpace(10),
 

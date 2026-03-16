@@ -18,4 +18,13 @@ class AppValidators {
     }
     return null;
   }
+  static String? nameValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return "name is required";
+    }
+    if (value.length < 6) {
+      return "name must be at least 6 characters";
+    }
+    return null;
+  }
 }

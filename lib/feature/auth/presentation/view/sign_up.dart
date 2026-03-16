@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:food_app/core/helper/extentions/media_query.dart';
 import 'package:food_app/core/route/routes.dart';
 import '../../../../core/constant/app_colors.dart';
 import '../../../../core/constant/app_text_style.dart';
 import '../../../../core/constant/assets_manger.dart';
-import '../../../../core/utils/vaidation.dart'; // تأكد من وجود validators مناسبة هنا
+import '../../../../core/utils/vaidation.dart';
 import '../../../../core/widgets/custom_text_form_feild.dart';
+import '../manger/auth_cubit/auth_cubit.dart';
 import '../widgets/continue_widgets.dart';
 import '../widgets/google-apple_button.dart';
 import '../widgets/login_text_section.dart';
@@ -39,18 +41,16 @@ class _SignInScreenState extends State<SignUpScreen> {
       backgroundColor: AppColors.scaffoldBackground,
       body: SafeArea(
         child: SingleChildScrollView(
-          // أضفنا Scroll لتجنب مشاكل لوحة المفاتيح
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: context.w(24)),
             child: Form(
               key: formKey,
               child: Column(
                 crossAxisAlignment:
-                    CrossAxisAlignment.start, // جعل المحاذاة لليسار للحقول
+                    CrossAxisAlignment.start,
                 children: [
                   context.verticalSpace(40),
 
-                  // الشعار والعناوين (في المنتصف)
                   Center(
                     child: Column(
                       children: [
@@ -87,7 +87,7 @@ class _SignInScreenState extends State<SignUpScreen> {
                   context.verticalSpace(8),
                   CustomTextFormField(
                     prefixIcon: const Icon(Icons.person_outline),
-                    validator: (value) => AppValidators.emailValidator(
+                    validator: (value) => AppValidators.nameValidator(
                       value,
                     ), // تأكد من وجودها في AppValidators
                     hintText: "John Doe",
@@ -137,27 +137,60 @@ class _SignInScreenState extends State<SignUpScreen> {
                   context.verticalSpace(32),
 
                   // زر إنشاء الحساب
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(vertical: context.h(16)),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(context.r(12)),
-                        ),
-                        backgroundColor: AppColors.gradientStart,
-                        elevation: 0,
-                      ),
-                      onPressed: () {
-                        if (formKey.currentState!.validate()) {
-                          // Logic Register
-                        }
+
+                  BlocConsumer<AuthCubit, AuthState>(
+                      builder: (context, state) {
+                        return state is AuthLoading
+                            ? const Center(child: CircularProgressIndicator())
+                            : SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(vertical: context.h(16)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(context.r(12)),
+                              ),
+                              backgroundColor: AppColors.gradientStart,
+                              elevation: 0,
+                            ),
+                            onPressed: () {
+                              if (formKey.currentState!.validate()) {
+                                context.read<AuthCubit>().signUp(
+                                  email.text.trim(),
+                                  password.text.trim(),
+                                  name.text.trim(),
+                                );
+                              }
+                            },
+                            child: Text(
+                              "Sign Up",
+                              style: AppTextStyles.titleMediumWhiteBold,
+                            ),
+                          ),
+                        );
                       },
-                      child: Text(
-                        "Sign Up",
-                        style: AppTextStyles.titleMediumWhiteBold,
-                      ),
-                    ),
+                      listener: (context, state) {
+                        if (state is AuthError) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(state.message),
+                              backgroundColor: AppColors.errorColor,
+                            ),
+                          );
+                          print(state.message);
+                        }
+                        if (state is AuthSuccess) {
+                          Navigator.pushNamed(context, Routes.signIn);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Register Success"),
+                              backgroundColor: AppColors.successColor,
+                            )
+                          );
+
+                        }
+
+                      },
                   ),
 
                   context.verticalSpace(24),

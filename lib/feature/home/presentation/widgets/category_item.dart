@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:food_app/core/constant/app_colors.dart';
 import 'package:food_app/core/helper/extentions/media_query.dart';
 import 'package:food_app/core/route/routes.dart';
 import '../../../../core/constant/app_text_style.dart';
@@ -14,8 +12,13 @@ class CategoryItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      borderRadius: BorderRadius.circular(context.r(12)),
       onTap: () {
-        Navigator.pushNamed(context, Routes.mealDetail, arguments: category);
+        Navigator.pushNamed(
+          context,
+          Routes.mealsByCategory,
+          arguments: category.name,
+        );
       },
       child: SizedBox(
         width: context.w(155),
@@ -25,25 +28,43 @@ class CategoryItem extends StatelessWidget {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              SvgPicture.asset(
+              Image.network(
                 category.image,
                 fit: BoxFit.cover,
               ),
 
               Container(
                 decoration: BoxDecoration(
-                  gradient: AppColors.customGradient
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.black.withOpacity(0.1),
+                      Colors.black.withOpacity(0.5),
+                    ],
+                  ),
                 ),
               ),
 
               Positioned(
-                left: 12,
-                bottom: 12,
+                left: context.w(12),
+                bottom: context.h(12),
+                right: context.w(12),
                 child: Text(
                   category.name.toUpperCase(),
-                  style: AppTextStyles.titleMediumWhiteBold,
+                  style: AppTextStyles.titleMediumWhiteBold.copyWith(
+                    shadows: [
+                      Shadow(
+                        offset: const Offset(0, 1),
+                        blurRadius: 2,
+                        color: Colors.black.withOpacity(0.7),
+                      ),
+                    ],
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              )
+              ),
             ],
           ),
         ),
