@@ -12,8 +12,11 @@ class AuthCubit extends Cubit<AuthState> {
   final LogInUseCase logInUseCase;
   final LogOutUseCase logOutUseCase;
 
-  AuthCubit({required this.signInUseCase, required this.logInUseCase, required this.logOutUseCase})
-    : super(AuthInitial());
+  AuthCubit({
+    required this.signInUseCase,
+    required this.logInUseCase,
+    required this.logOutUseCase,
+  }) : super(AuthInitial());
 
   Future<void> signIn(String email, String password) async {
     emit(AuthLoading());
@@ -21,7 +24,7 @@ class AuthCubit extends Cubit<AuthState> {
       LoginParams(email: email, password: password),
     );
 
-    res.fold((l) => emit(AuthError(l.massage)), (r) => emit(AuthSuccess()));
+    res.fold((l) => emit(AuthError(l.message)), (r) => emit(AuthSuccess()));
   }
 
   Future<void> signUp(String email, String password, String name) async {
@@ -29,12 +32,12 @@ class AuthCubit extends Cubit<AuthState> {
     final res = await signInUseCase.call(
       SignUpParams(email: email, password: password, name: name),
     );
-    res.fold((l) => emit(AuthError(l.massage)), (r) => emit(AuthSuccess()));
+    res.fold((l) => emit(AuthError(l.message)), (r) => emit(AuthSuccess()));
   }
 
   Future<void> logOut() async {
     emit(AuthLoading());
     final res = await logOutUseCase.call();
-    res.fold((l) => emit(AuthError(l.massage)), (r) => emit(AuthSuccess()));
+    res.fold((l) => emit(AuthError(l.message)), (r) => emit(AuthSuccess()));
   }
 }

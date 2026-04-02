@@ -4,6 +4,7 @@ import 'package:food_app/core/constant/app_colors.dart';
 import 'package:food_app/core/constant/app_text_style.dart';
 import 'package:food_app/core/helper/extentions/media_query.dart';
 import '../../../../core/widgets/custom_text_form_feild.dart';
+import '../../../../core/widgets/search.dart';
 import '../manger/home_cubit/meals_cubit.dart';
 import '../widgets/category_item.dart';
 
@@ -30,7 +31,18 @@ class Home extends StatelessWidget {
                     "Recipe Finder",
                     style: AppTextStyles.bold20black,
                   ),
-                  const Icon(Icons.search, color: Colors.red)
+                  IconButton(
+                    icon: const Icon(Icons.search, color: Colors.red),
+                    onPressed: () {
+                      final state = context.read<MealsCubit>().state;
+                      if (state is MealsSuccess) {
+                        showSearch(
+                          context: context,
+                          delegate: MealsSearch(categories: state.meals),
+                        );
+                      }
+                    },
+                  ),
                 ],
               ),
 

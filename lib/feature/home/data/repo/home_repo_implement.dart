@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 import 'package:dio/src/response.dart';
 import 'package:food_app/core/error/failure.dart';
 import 'package:food_app/feature/home/data/models/meal_details_model.dart';
@@ -48,6 +49,8 @@ class HomeRepoImplement implements RecipeRepository{
 
       return Right(mealList);
 
+    }on DioException catch(e){
+      return Left(ServerFailure.fromDioException(e));
     } catch (e) {
 
       return Left(Failure(e.toString()));
@@ -71,6 +74,8 @@ class HomeRepoImplement implements RecipeRepository{
       meals.map((e) => MealDetailsModel.fromJson(e as Map<String, dynamic>)).toList();
 
       return Right(mealList);
+    }on DioException catch(e){
+      return Left(ServerFailure.fromDioException(e));
     } catch (e) {
       return Left(Failure(e.toString()));
     }

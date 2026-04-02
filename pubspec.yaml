@@ -41,6 +41,7 @@ dependencies:
   dartz: ^0.10.1
   flutter_svg: ^2.2.4
   supabase_flutter: ^2.11.8
+  get_it: ^9.2.1
 
 
 dev_dependencies:

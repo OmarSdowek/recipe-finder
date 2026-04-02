@@ -24,7 +24,7 @@ class MealsCubit extends Cubit<MealsState> {
     emit(MealsLoading());
     final result = await getCategoriesUseCase.call();
     result.fold(
-      (l) => emit(MealsError(l.massage)),
+      (l) => emit(MealsError(l.message)),
       (r) => emit(MealsSuccess(meals: r)),
     );
   }
@@ -34,7 +34,7 @@ class MealsCubit extends Cubit<MealsState> {
     emit(MealsLoading());
     final result = await getMealsByCategoryUseCase.call(category);
     result.fold(
-          (l) => emit(MealsError(l.massage)),
+          (l) => emit(MealsError(l.message)),
           (r) => emit(MealsSuccess(meals: r)),
     );
   }
@@ -45,7 +45,7 @@ class MealsCubit extends Cubit<MealsState> {
     final result = await getMealDetais?.call(id);
 
     result?.fold(
-          (l) => emit(MealsError(l.massage)),
+          (l) => emit(MealsError(l.message)),
           (r) => emit(MealDetailsSuccess(meals: r)),
     );
   }
