@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:food_app/core/constant/app_colors.dart';
 import 'package:food_app/core/constant/assets_manger.dart';
 import 'package:food_app/core/helper/extentions/media_query.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/constant/app_text_style.dart';
 import '../../../../core/route/routes.dart';
@@ -17,10 +18,21 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pushReplacementNamed(context, Routes.signUp);
-    });
     super.initState();
+    _navigate();
+  }
+
+  Future<void> _navigate() async {
+    await Future.delayed(const Duration(seconds: 3));
+    if (!mounted) return;
+
+    // Check if user already has an active Supabase session
+    final session = Supabase.instance.client.auth.currentSession;
+    if (session != null) {
+      Navigator.pushReplacementNamed(context, Routes.home);
+    } else {
+      Navigator.pushReplacementNamed(context, Routes.signUp);
+    }
   }
   @override
   Widget build(BuildContext context) {

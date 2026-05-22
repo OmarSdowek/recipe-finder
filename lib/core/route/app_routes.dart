@@ -3,6 +3,7 @@ import 'package:food_app/feature/home/presentation/view/meal_details.dart';
 import '../../feature/auth/presentation/manger/auth_cubit/auth_cubit.dart';
 import '../../feature/auth/presentation/view/sign_in.dart';
 import '../../feature/auth/presentation/view/sign_up.dart';
+import '../../feature/favourite/presentation/manger/favourites_cubit.dart';
 import '../../feature/home/presentation/layout.dart';
 import '../../feature/home/presentation/manger/home_cubit/meals_cubit.dart';
 import '../../feature/home/presentation/view/meals_by_category.dart';
@@ -15,12 +16,12 @@ class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case Routes.splash:
-        return MaterialPageRoute(builder: (_) => SplashScreen());
+        return MaterialPageRoute(builder: (_) => const SplashScreen());
 
       case Routes.signIn:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
-            create: (_) => getIt<AuthCubit>(), // من DI
+            create: (_) => getIt<AuthCubit>(),
             child: const SignIn(),
           ),
         );
@@ -28,7 +29,7 @@ class AppRouter {
       case Routes.signUp:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
-            create: (_) => getIt<AuthCubit>(), // نفس AuthCubit
+            create: (_) => getIt<AuthCubit>(),
             child: const SignUpScreen(),
           ),
         );
@@ -41,8 +42,14 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) {
             final cubit = getIt<MealsCubit>();
-            cubit.getMealsByCategory(category); // استدعاء الدالة
-            return BlocProvider.value(value: cubit, child: MealsByCategory());
+            cubit.getMealsByCategory(category);
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider.value(value: cubit),
+                BlocProvider.value(value: getIt<FavouritesCubit>()),
+              ],
+              child: const MealsByCategory(),
+            );
           },
           settings: RouteSettings(arguments: category),
         );
@@ -53,8 +60,11 @@ class AppRouter {
           builder: (_) {
             final cubit = getIt<MealsCubit>();
             cubit.getMealsDetails(mealId);
-            return BlocProvider.value(
-              value: cubit,
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider.value(value: cubit),
+                BlocProvider.value(value: getIt<FavouritesCubit>()),
+              ],
               child: const MealDetailScreen(),
             );
           },
@@ -63,8 +73,10 @@ class AppRouter {
 
       case Routes.favourites:
         return MaterialPageRoute(
-          builder: (_) =>
-              const Scaffold(body: Center(child: Text("Favourites Screen"))),
+          builder: (_) => BlocProvider.value(
+            value: getIt<FavouritesCubit>(),
+            child: const Scaffold(body: Center(child: Text("Favourites Screen"))),
+          ),
         );
 
       case Routes.profile:

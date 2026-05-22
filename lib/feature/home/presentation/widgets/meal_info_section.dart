@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_app/core/widgets/custom_button.dart';
 import '../../../../core/constant/app_colors.dart';
+import '../../../favourite/presentation/manger/favourites_cubit.dart';
+import '../../../home/data/models/meal_details_model.dart';
+import '../../../home/data/models/meal_model.dart';
 import 'ingredient_section.dart';
 import 'instruction_section.dart';
 
 class MealInfoSection extends StatelessWidget {
-  final dynamic meal;
+  final MealDetailsModel meal;
 
   const MealInfoSection({super.key, required this.meal});
 
@@ -22,8 +26,7 @@ class MealInfoSection extends StatelessWidget {
       ),
       child: ListView(
         children: [
-
-          /// CATEGORY
+          /// CATEGORY & AREA TAGS
           Row(
             children: [
               _Tag(text: meal.strCategory, color: Colors.orange),
@@ -53,12 +56,41 @@ class MealInfoSection extends StatelessWidget {
 
           const SizedBox(height: 30),
 
-          CustomButton(
-            text: "Add to Favorites",
-            onPressed: () {},
-            backgroundColor: AppColors.gradientEnd,
-            icon: const Icon(Icons.favorite_border, color: Colors.white),
+          /// ADD TO FAVOURITES BUTTON
+          BlocBuilder<FavouritesCubit, FavouritesState>(
+            builder: (context, state) {
+              final isFav = context.read<FavouritesCubit>().isFavourite(meal.idMeal);
+              return CustomButton(
+                text: isFav ? "Remove from Favourites" : "Add to Favourites",
+                onPressed: () {
+                  final mealObj = Meal(
+                    idMeal: meal.idMeal,
+                    strMeal: meal.strMeal,
+                    strMealThumb: meal.strMealThumb,
+                  );
+                  context.read<FavouritesCubit>().toggleFavourite(mealObj);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        isFav
+                            ? '${meal.strMeal} removed from favourites'
+                            : '${meal.strMeal} added to favourites',
+                      ),
+                      duration: const Duration(seconds: 2),
+                      backgroundColor: isFav ? Colors.grey : AppColors.gradientEnd,
+                    ),
+                  );
+                },
+                backgroundColor: isFav ? Colors.grey : AppColors.gradientEnd,
+                icon: Icon(
+                  isFav ? Icons.favorite : Icons.favorite_border,
+                  color: Colors.white,
+                ),
+              );
+            },
           ),
+
+          const SizedBox(height: 20),
         ],
       ),
     );
@@ -76,7 +108,7 @@ class _Tag extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: color.withOpacity(.15),
+        color: color.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(

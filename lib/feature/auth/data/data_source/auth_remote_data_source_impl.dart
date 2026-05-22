@@ -36,7 +36,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSourse {
     required String password,
     required String name,
   }) async {
-
     final response = await supabase.auth.signUp(
       email: email,
       password: password,
@@ -54,10 +53,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSourse {
     return UserModel(
       id: user.id,
       email: user.email ?? "",
-      name: name,
+      name: user.userMetadata?['name'] ?? name,
     );
   }
-
   @override
   Future<void> logOut() async {
     await supabase.auth.signOut();

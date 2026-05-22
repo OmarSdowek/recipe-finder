@@ -6,11 +6,14 @@ import '../../feature/auth/domin/use_case/sign_up_use_case.dart';
 import '../../feature/auth/domin/use_case/log_in_use_case.dart';
 import '../../feature/auth/domin/use_case/log_out_use_case.dart';
 import '../../feature/auth/presentation/manger/auth_cubit/auth_cubit.dart';
+import '../../feature/favourite/presentation/manger/favourites_cubit.dart';
 import '../../feature/home/data/repo/home_repo_implement.dart';
 import '../../feature/home/domin/use_cas/get_category_use_case.dart';
 import '../../feature/home/domin/use_cas/get_meal_detais.dart';
 import '../../feature/home/domin/use_cas/get_meals_by_category_use_cass.dart';
 import '../../feature/home/presentation/manger/home_cubit/meals_cubit.dart';
+import '../../feature/profile/presentation/manger/log_out_cubit/log_out_cubit.dart';
+import '../../feature/profile/presentation/manger/profile_cubit/profile_cubit.dart';
 import '../network/api_service.dart';
 
 final getIt = GetIt.instance;
@@ -20,7 +23,7 @@ void setupLocator() {
   getIt.registerLazySingleton(() => ApiService());
 
   getIt.registerLazySingleton(() =>
-      AuthRemoteDataSourceImpl(Supabase.instance.client)); // Singleton
+      AuthRemoteDataSourceImpl(Supabase.instance.client));
 
   getIt.registerLazySingleton<AuthRepoImpl>(() =>
       AuthRepoImpl(getIt<AuthRemoteDataSourceImpl>()));
@@ -47,5 +50,10 @@ void setupLocator() {
     getMealDetais: getIt<GetMealDetais>(),
   ));
 
+  // ------------------- Favourites -------------------
+  getIt.registerLazySingleton(() => FavouritesCubit());
 
+  // ------------------- Profile -------------------
+  getIt.registerFactory(() => LogOutCubit(getIt<LogOutUseCase>()));
+  getIt.registerFactory(() => ProfileCubit(Supabase.instance.client));
 }

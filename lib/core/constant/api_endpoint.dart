@@ -1,6 +1,7 @@
 class ApiEndpoints {
   static const String supabaseUrl = "https://jytjxzswjydcidbzznsu.supabase.co";
 
+
   /// api endpoint
   static const String baseUrl =
       "https://www.themealdb.com/api/json/v1/1";  /// get categories

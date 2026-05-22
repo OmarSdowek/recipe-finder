@@ -39,8 +39,10 @@ class HomeRepoImplement implements RecipeRepository{
   @override
   Future<Either<Failure, List<Meal>>> getMealsByCategory(String category) async{
     try {
-      final endPoint = "${ApiEndpoints.baseUrl}/filter.php?c=$category";
-      final Response response = await _apiService.get(endPoint);
+      final Response response = await _apiService.get(
+        "/filter.php",
+        queryParameters: {"c": category},
+      );
 
       List categories = response.data['meals'];
 
@@ -61,8 +63,10 @@ class HomeRepoImplement implements RecipeRepository{
 
   Future<Either<Failure, List<MealDetailsModel>>> getMealsDetails(String id) async {
     try {
-      final String endPoint = "${ApiEndpoints.baseUrl}/lookup.php?i=$id";
-      final Response response = await _apiService.get(endPoint);
+      final Response response = await _apiService.get(
+        "/lookup.php",
+        queryParameters: {"i": id},
+      );
 
       final List? meals = response.data['meals'];
 
